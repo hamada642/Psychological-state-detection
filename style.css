@@ -1,0 +1,16 @@
+body{font-family: Arial, sans-serif;background: linear-gradient(180deg,#0f1724,#0b1220);color:#fff;margin:0;padding:16px}
+.center{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.hidden{display:none}
+.topRow{display:flex;gap:12px;align-items:center}
+video{width:360px;height:270px;border-radius:10px;border:2px solid rgba(255,255,255,0.06);background:#000}
+canvas{width:360px;height:270px}
+.controls{margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#result{margin-top:14px;background:rgba(255,255,255,0.03);padding:12px;border-radius:8px;width:760px;max-width:95%}
+#loginScreen{max-width:420px;margin:60px auto;padding:20px;background:rgba(255,255,255,0.02);border-radius:8px}
+input{padding:10px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);width:100%;margin-bottom:8px}
+button{padding:8px 12px;border-radius:6px;border:none;background:#0ea5a4;color:#fff;cursor:pointer}
+button.mode{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+button.mode.active{background:#0ea5a4}
+.instructions{margin-top:12px;opacity:0.85;font-size:0.95rem}
+.modes{display:flex;gap:8px;margin-bottom:8px}
+.resultBox div{margin:6px 0}

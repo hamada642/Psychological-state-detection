@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Emotional Mirror</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <div id="loginScreen" class="center">
+    <h2>🔐 ادخل كلمة المرور</h2>
+    <input id="passwordInput" type="password" placeholder="Password" />
+    <button id="loginBtn">دخول</button>
+    <div id="loginMsg"></div>
+  </div>
+
+  <div id="app" class="hidden center">
+    <h2>🎭 المرآة العاطفية</h2>
+
+    <div class="modes">
+      <button id="thirdPartyBtn" class="mode active">فحص طرف ثالث</button>
+      <button id="selfCheckBtn" class="mode">فحص ذاتي</button>
+    </div>
+
+    <div id="cameraArea" class="topRow">
+      <video id="video" autoplay muted playsinline></video>
+      <canvas id="overlay"></canvas>
+    </div>
+
+    <div class="controls">
+      <select id="langSelect">
+        <option value="ar">العربية</option>
+        <option value="en">English</option>
+        <option value="tr">Türkçe</option>
+        <option value="la">Latin</option>
+        <option value="zh">中文</option>
+      </select>
+      <button id="startVoiceBtn">🎙️ Start Voice</button>
+      <button id="captureBtn">📸 Capture Snapshot</button>
+      <button id="recordBtn">● Record 5s</button>
+    </div>
+
+    <div id="result" class="resultBox">
+      <div id="faceEmotion">Face: —</div>
+      <div id="voiceEmotion">Voice: —</div>
+      <div id="stressLevel">Stress: —</div>
+      <div id="notes">Notes: —</div>
+    </div>
+
+    <div class="instructions">
+      <p>شرح: لا يحتاج المراجع لخبرة. امسك الهاتف ووجّه الكاميرا إلى وجه الموضوع واضغط "Capture" أو "Record 5s".</p>
+    </div>
+  </div>
+
+  <div id="footer" class="center">مبني باستخدام face-api.js و WebAudio — اضف كلمة المرور كـ ADMIN_PASSWORD في Netlify env.</div>
+</body>
+</html>
