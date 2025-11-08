@@ -6,16 +6,28 @@
   <title>Emotional Mirror</title>
   <link rel="stylesheet" href="style.css">
   <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+  <!-- script.js محمّل بتأخير، ولن يبدأ إلا بعد السماح بالدخول -->
   <script defer src="script.js"></script>
+
+  <style>
+    .hidden { display: none !important; }
+    .center { display:flex; align-items:center; justify-content:center; flex-direction:column; min-height:100vh; }
+    #loginScreen { max-width:360px; padding:20px; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.12); background:#fff; }
+    #loginScreen input { width:100%; padding:10px; margin-top:10px; box-sizing:border-box; }
+    #loginScreen button { margin-top:12px; padding:10px 16px; cursor:pointer; }
+    #loginMsg { color:crimson; margin-top:8px; min-height:1.2em; }
+  </style>
 </head>
 <body>
+  <!-- شاشة الدخول -->
   <div id="loginScreen" class="center">
     <h2>🔐 ادخل كلمة المرور</h2>
-    <input id="passwordInput" type="password" placeholder="Password" />
+    <input id="passwordInput" type="password" placeholder="Password" autocomplete="off" />
     <button id="loginBtn">دخول</button>
     <div id="loginMsg"></div>
   </div>
 
+  <!-- محتوى التطبيق مخفي حتى تسجيل الدخول -->
   <div id="app" class="hidden center">
     <h2>🎭 المرآة العاطفية</h2>
 
@@ -55,5 +67,64 @@
   </div>
 
   <div id="footer" class="center">مبني باستخدام face-api.js و WebAudio — اضف كلمة المرور كـ ADMIN_PASSWORD في Netlify env.</div>
+
+  <!-- سكربت إدارة الدخول -->
+  <script>
+    (function(){
+      // === كلمة المرور المضمنة ===
+      const ADMIN_PASSWORD = "Hgmouabm_689";
+      // ==========================
+
+      const loginScreen = document.getElementById('loginScreen');
+      const app = document.getElementById('app');
+      const input = document.getElementById('passwordInput');
+      const btn = document.getElementById('loginBtn');
+      const msg = document.getElementById('loginMsg');
+
+      const SESSION_KEY = 'emmirror_logged_in';
+
+      function showApp() {
+        loginScreen.classList.add('hidden');
+        app.classList.remove('hidden');
+        if (typeof window.appInit === 'function') {
+          try { window.appInit(); } catch(e){ console.warn('appInit error', e); }
+        }
+      }
+      function showLogin() {
+        loginScreen.classList.remove('hidden');
+        app.classList.add('hidden');
+      }
+
+      function fail(msgText) {
+        msg.textContent = msgText;
+        input.value = '';
+        input.focus();
+      }
+
+      try {
+        if (sessionStorage.getItem(SESSION_KEY) === '1') {
+          showApp();
+        } else {
+          showLogin();
+        }
+      } catch(e){ showLogin(); }
+
+      btn.addEventListener('click', ()=>{
+        const v = input.value || '';
+        if (v === ADMIN_PASSWORD) {
+          try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e){}
+          showApp();
+        } else {
+          fail('كلمة المرور خاطئة');
+        }
+      });
+
+      input.addEventListener('keyup', (e)=>{
+        if (e.key === 'Enter') btn.click();
+      });
+
+      // ملاحظة: حماية على جهة العميل فقط وقابلة للتجاوز من قبل المستخدمين المتقدمين
+    })();
+  </script>
 </body>
 </html>
