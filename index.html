@@ -6,8 +6,20 @@
   <title>Emotional Mirror</title>
   <link rel="stylesheet" href="style.css">
   <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
-  <!-- script.js محمّل بتأخير، ولن يبدأ إلا بعد السماح بالدخول -->
   <script defer src="script.js"></script>
+
+  <!-- إعدادات الـ PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2196f3">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker Registered'))
+        .catch(err => console.warn('SW registration failed', err));
+      });
+    }
+  </script>
 
   <style>
     .hidden { display: none !important; }
@@ -27,7 +39,7 @@
     <div id="loginMsg"></div>
   </div>
 
-  <!-- محتوى التطبيق مخفي حتى تسجيل الدخول -->
+  <!-- محتوى التطبيق -->
   <div id="app" class="hidden center">
     <h2>🎭 المرآة العاطفية</h2>
 
@@ -66,21 +78,19 @@
     </div>
   </div>
 
-  <div id="footer" class="center">مبني باستخدام face-api.js و WebAudio — اضف كلمة المرور كـ ADMIN_PASSWORD في Netlify env.</div>
+  <div id="footer" class="center">
+    مبني باستخدام face-api.js و WebAudio — اضف كلمة المرور كـ ADMIN_PASSWORD في Netlify env.
+  </div>
 
-  <!-- سكربت إدارة الدخول -->
+  <!-- كود الدخول -->
   <script>
     (function(){
-      // === كلمة المرور المضمنة ===
       const ADMIN_PASSWORD = "Hgmouabm_689";
-      // ==========================
-
       const loginScreen = document.getElementById('loginScreen');
       const app = document.getElementById('app');
       const input = document.getElementById('passwordInput');
       const btn = document.getElementById('loginBtn');
       const msg = document.getElementById('loginMsg');
-
       const SESSION_KEY = 'emmirror_logged_in';
 
       function showApp() {
@@ -90,6 +100,7 @@
           try { window.appInit(); } catch(e){ console.warn('appInit error', e); }
         }
       }
+
       function showLogin() {
         loginScreen.classList.remove('hidden');
         app.classList.add('hidden');
@@ -122,9 +133,47 @@
       input.addEventListener('keyup', (e)=>{
         if (e.key === 'Enter') btn.click();
       });
-
-      // ملاحظة: حماية على جهة العميل فقط وقابلة للتجاوز من قبل المستخدمين المتقدمين
     })();
+  </script>
+
+  <!-- manifest -->
+  <script type="application/json" id="manifest-placeholder">
+  {
+    "name": "Emotional Mirror",
+    "short_name": "EmoMirror",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#2196f3",
+    "icons": [
+      { "src": "https://cdn-icons-png.flaticon.com/512/1688/1688400.png", "sizes": "192x192", "type": "image/png" },
+      { "src": "https://cdn-icons-png.flaticon.com/512/1688/1688400.png", "sizes": "512x512", "type": "image/png" }
+    ]
+  }
+  </script>
+
+  <script>
+    // إنشاء manifest.json مباشرة من الصفحة
+    const blob = new Blob([document.getElementById('manifest-placeholder').textContent], {type : 'application/json'});
+    const manifestURL = URL.createObjectURL(blob);
+    document.querySelector('link[rel="manifest"]').setAttribute('href', manifestURL);
+  </script>
+
+  <!-- service worker inline -->
+  <script id="sw-inline">
+    const swCode = `
+      self.addEventListener('install', e => {
+        e.waitUntil(caches.open('emo-cache').then(cache => {
+          return cache.addAll(['./', './index.html', './style.css', './script.js']);
+        }));
+      });
+      self.addEventListener('fetch', e => {
+        e.respondWith(caches.match(e.request).then(resp => resp || fetch(e.request)));
+      });
+    `;
+    const blobSW = new Blob([swCode], {type : 'text/javascript'});
+    const swURL = URL.createObjectURL(blobSW);
+    navigator.serviceWorker.register(swURL);
   </script>
 </body>
 </html>
